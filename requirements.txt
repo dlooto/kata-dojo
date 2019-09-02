@@ -1,0 +1,2 @@
+-i https://pypi.douban.com/simple
+pytest==5.1.2
