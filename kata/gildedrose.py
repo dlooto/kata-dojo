@@ -3,8 +3,6 @@
 # Created by junn, on 2019-09-01
 #
 
-# 
-
 
 ITEM_NAMES = {
     "normal": "Normal",

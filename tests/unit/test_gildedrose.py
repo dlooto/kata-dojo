@@ -3,15 +3,14 @@
 # Created by junn, on 2019-09-02
 #
 
-# 
-
 import logging
 from unittest import TestCase
 
 from kata.gildedrose import (
     Item, AgedBrieItem, SulfurasItem, BackstagePassesItem,
     ConjuredItem, Store,
-    ITEM_NAMES)
+    ITEM_NAMES
+)
 
 logs = logging.getLogger(__name__)
 
@@ -180,7 +179,6 @@ SULFURAS_DATA = {
     "name": ITEM_NAMES["sulfuras"], "sellin": 30, "quality": 50, "num": 10
  }
 
-()
 
 # "conjured":     {"name": "", "sellin": 30, "quality": 50, "num": 10}
 # "backstage_passes": {"name": "", "sellin": 30, "quality": 50, "num": 10}

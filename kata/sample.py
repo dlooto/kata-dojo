@@ -3,7 +3,7 @@
 # Created by junn, on 2019-09-01
 #
 
-# 热身
+# Warm up
 
 import logging
 
