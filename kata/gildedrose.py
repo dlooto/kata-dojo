@@ -145,6 +145,8 @@ class ConjuredItem(Item):
     "Conjured"物品的品质`Quality`下降速度比正常物品快一倍
     """
 
+    # name = ITEM_NAMES['conjured']    # 名字 or 类型？ TODO...
+
     def __init__(self, sellin, quality=Item.MAX_QUALITY):
         super(ConjuredItem, self).__init__(sellin, quality)
         self.name = ITEM_NAMES['conjured']
@@ -161,35 +163,64 @@ class ConjuredItem(Item):
         self._correct_min_quality()
 
 
-class ItemFactory(object):
+class ItemFactory:
+
+    @staticmethod
+    def new_item(item_name, **kwargs):
+        if item_name not in ITEM_NAMES.keys():
+            return None
+
+        if item_name == "normal":
+            return Item(**kwargs)
+        if item_name == "aged_brie":
+            return AgedBrieItem(**kwargs)
+        if item_name == "sulfuras":
+            return SulfurasItem(**kwargs)
+        if item_name == "conjured":
+            return ConjuredItem(**kwargs)
+        if item_name == "backstage_passes":
+            return BackstagePassesItem(**kwargs)
 
     @staticmethod
     def init_items(items_data):
-        items = []
-        items.append(Item(30, 50))
-        items.append(AgedBrieItem(30, 50))
-        items.append(BackstagePassesItem(30, 50))
-        items.append(SulfurasItem(30, 50))
-        items.append(ConjuredItem(30, 50))
-        return items
+        """
+        initialize items according to items_data passed
+
+        :param items_data:  like:
+            {
+                "normal": {"sellin": 10, "quality": 50},
+                "aged_brie": {"sellin": 30, "quality": 50}
+            }
+
+        """
+        result_dict = {}
+        for k, v in items_data.items():
+            result_dict[k] = (ItemFactory.new_item(k, **v))
+        return result_dict
+
+    @staticmethod
+    def init_item_data_dict():
+        items_data = {}
+        for key, value in ITEM_NAMES.items():
+            items_data[key] = {"name": value}
+        return items_data
 
 
 class Store:
 
-    def __init__(self, *args, **kwargs):
-        self.items = ItemFactory.init_items()
+    def __init__(self, items_data):
+        self.item_dict = ItemFactory.init_items(items_data)
 
-    def next_day(self):
+    def pass_one_day(self):
         """
         结束一天， 降低物品的sellin和quality值
-        :return:
         """
-        for item in self.items:
+        for item in self.item_dict.values():
             item.update_both()
 
-    def after_many_days(self, days):
+    def pass_many_days(self, days):
         """ 结束多天 """
         for i in range(days):
-            self.next_day()
+            self.pass_one_day()
 
 

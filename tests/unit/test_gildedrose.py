@@ -6,11 +6,13 @@
 import logging
 from unittest import TestCase
 
+import pytest
+
 from kata.gildedrose import (
     Item, AgedBrieItem, SulfurasItem, BackstagePassesItem,
     ConjuredItem, Store,
-    ITEM_NAMES
-)
+    ITEM_NAMES,
+    ItemFactory)
 
 logs = logging.getLogger(__name__)
 
@@ -167,25 +169,62 @@ class TestConjuredItem(TestCase):
         assert cq - conjured_item.quality == 2 * (nq - normal_item.quality)
 
 
-NORMAL_DATA = {
-    "name": ITEM_NAMES['normal'], "sellin": 30, "quality": 50, "num": 10
+def test_item_names_dict():
+    items_data = ItemFactory.init_item_data_dict()
+    assert items_data.get("aged_brie") is not None
+    assert items_data["aged_brie"].get("name") == ITEM_NAMES["aged_brie"]
+
+
+def test_factory_new_item():
+    item = ItemFactory.new_item("unkown_item", **{"sellin": 10, "quality": 50})
+    assert item is None
+
+    item = ItemFactory.new_item("normal", **{"sellin": 10, "quality": 50})
+    assert item.sellin == 10
+    assert isinstance(item, Item)
+    item = ItemFactory.new_item("conjured", **{"sellin": 10, "quality": 50})
+    assert type(item) == ConjuredItem
+
+
+ITEMS_DATA = {
+    "normal": {"sellin": 10, "quality": 50},
+    "sulfuras": {"sellin": 30, "quality": 80},
+    "conjured": {"sellin": 20, "quality": 50},
+    "aged_brie": {"sellin": 30, "quality": 30},
+    "backstage_passes": {"sellin": 30, "quality": 50},
 }
 
-AGED_BRIE_DATA = {
-    "name": ITEM_NAMES["aged_brie"], "sellin": 30, "quality": 50, "num": 10
-}
 
-SULFURAS_DATA = {
-    "name": ITEM_NAMES["sulfuras"], "sellin": 30, "quality": 50, "num": 10
- }
-
-
-# "conjured":     {"name": "", "sellin": 30, "quality": 50, "num": 10}
-# "backstage_passes": {"name": "", "sellin": 30, "quality": 50, "num": 10}
+def test_factory_init_items():
+    items_data = ITEMS_DATA
+    item_dict = ItemFactory.init_items(items_data)
+    conjured_item = item_dict.get("conjured")
+    assert conjured_item is not None
+    assert conjured_item.sellin == items_data["conjured"]["sellin"]
 
 
-# class TestShop(TestCase):
-#
-#     def test_shop_create(self):
-#         store = Store()
+def test_shop_create():
+    items_data = ITEMS_DATA
+    store = Store(items_data)
+
+    store.pass_one_day()
+
+    normal_item = store.item_dict.get("normal")
+    assert normal_item is not None
+    assert items_data["normal"]["sellin"] == normal_item.sellin + 1
+
+    store.pass_many_days(39)
+
+    aged_brie_item = store.item_dict.get("aged_brie")
+    assert items_data["aged_brie"]["sellin"] == aged_brie_item.sellin + 40
+    assert aged_brie_item.quality == 50
+
+    backstage_item = store.item_dict.get("backstage_passes")
+    assert items_data["backstage_passes"]["sellin"] == backstage_item.sellin + 40
+
+    sulfuras_item = store.item_dict.get("sulfuras")
+    assert items_data["sulfuras"]["quality"] == sulfuras_item.quality
+
+
+
 
