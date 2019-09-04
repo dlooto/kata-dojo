@@ -1,4 +1,4 @@
-## 本训练中的题目
+## README
 
 ### Get Environment
 ```
@@ -18,8 +18,9 @@ pytest -v unit/test_gildedrose.py
 
 ```
 
-
-[Gilded Rose](docs/gildedrose.md)
+### 训练题目
+* [Gilded Rose](docs/gildedrose.md)
+* [Bowling](docs/bowling.md)
 
 
 [All Kata](http://codingdojo.org/kata/)

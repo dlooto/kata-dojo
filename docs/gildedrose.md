@@ -26,7 +26,8 @@
 
 再次澄清，每种物品的品质不会超过50，然而"Sulfuras"是一个传奇物品，因此它的品质是80且永远不变。
 
-[Gilded Rose](https://github.com/emilybache/GildedRose-Refactoring-Kata/blob/master/GildedRoseRequirements_zh.txt)
 
-### [Contens](../README.md)
-### [All Kata](http://codingdojo.org/kata/)
+[原文链接](https://github.com/emilybache/GildedRose-Refactoring-Kata/blob/master/GildedRoseRequirements_zh.txt)
+
+
+[Contens](../README.md) | [All Kata](http://codingdojo.org/kata/)
