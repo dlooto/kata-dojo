@@ -18,7 +18,7 @@ pytest -v unit/test_gildedrose.py
 
 ```
 
-### 训练题目
+### Training Topics 
 * [Gilded Rose](docs/gildedrose.md)
 * [Bowling](docs/bowling.md)
 
