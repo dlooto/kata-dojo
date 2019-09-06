@@ -17,7 +17,7 @@ from kata.gildedrose import (
 logs = logging.getLogger(__name__)
 
 
-class TestItem(TestCase):
+class ItemTest(TestCase):
 
     # def setUp(self):
     #     pass
