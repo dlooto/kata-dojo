@@ -3,18 +3,29 @@
 # Created by junn, on 2019-09-06
 #
 
+###################################
+#       保龄球游戏计分程序          #
+###################################
 
 class FrameFactory:
 
     @classmethod
     def create_frames(cls, sequence):
         """
+        未作如下检查：
+        1. 正确的投掷次数和轮次
+        2. 什么是有效的投掷
+
         :param sequence: 以空格分隔的字符串，如'9- x 3/ 5- 5- 5- 5- 5- 5- 8-'
         :return:
         """
 
         # Build Frame list
         frames = sequence.split(' ')
+        for frame in frames:
+            if not frame:
+                frames.remove(frame)
+
         if len(frames) < 10:
             raise Exception("Frame length less than 10 ")
 
@@ -52,7 +63,6 @@ class BowlingScorer:
         sums = 0
         for frame in self.frames:
             sums += frame.get_points()
-
         return sums
 
 
@@ -74,6 +84,7 @@ class Frame:
                 rolls.append(Roll(i, 0))
             else:
                 rolls.append(Roll(i, int(s)))
+
             i += 1
         return rolls
 
@@ -164,8 +175,6 @@ def to_int(roll_str):
 
 class Roll:
     """ 一次投掷 """
-
-    # {"x": 10, "/": , "-": 0}
 
     def __init__(self, index, pins):
         """

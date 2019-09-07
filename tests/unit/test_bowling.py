@@ -15,15 +15,36 @@ class BowlingTest(TestCase):
     “x” 表示一个strike, “/” 表示一个 spare, “-” 代表未投中
     """
 
-    def setUp(self) -> None:
-        self.bs = BowlingScorer()
+    # def setUp(self) -> None:
+    #     self.bs = BowlingScorer()
 
-    # def test_new_bowling_scoring(self):
-    #     self.bs.sequence = '9-9-9-9-9-9-9-9-9-9-'
-    #     assert self.bs.total_points() == 90
+    def test_frames_length_less_than_10_exception(self):
+        sequence = '9- x 3/ 5- 5- 5- 5- 5- 5- '
+        # self.assertRaises(Exception, FrameFactory.create_frames, sequence)
+        self.assertRaisesRegex(Exception, 'Frame length less than 10 *',
+                               FrameFactory.create_frames, sequence)
+
+    def test_frames_create_sequence_exception(self):
+        sequence = '9- x 3/ 5- 5- 5u 5- 5- 5- 5-'
+        self.assertRaisesRegex(Exception, 'invalid literal for int() *',
+                               FrameFactory.create_frames, sequence)
 
 
-def test_one_frame_score():
+def test_frame_points():
+    sequence = '9- x 3/ 5- 5- 5- 5- 5- 5- x x x'
+    frames = FrameFactory.create_frames(sequence)
+
+    assert frames[0].get_points() == 9
+    assert frames[1].get_points() == 20
+    assert frames[2].get_points() == 15
+
+    assert not frames[1].has_two_rolls()
+    assert not frames[2].has_three_rolls()
+    assert frames[3].has_two_rolls()
+    assert frames[9].has_three_rolls()
+
+
+def test_one_frame_pins():
     frame = Frame(1, '9-')
     assert frame.get_first_roll_pins() == 9
     assert frame.get_total_rolls_pins() == 9
@@ -56,8 +77,6 @@ def test_frame_factory():
     assert frames[2].index == 2
     assert frames[2].next.get_first_roll_pins() == 5
 
-def test_create_frames_exception():
-    pass
 
 def test_strike_frame_create():
     sequence = 'x x x x x x x x x x x x'
@@ -65,12 +84,27 @@ def test_strike_frame_create():
     assert len(bs.frames) == 10
     assert bs.total_points() == 300
 
-def test_total_points():
+    sequence = '3- 3- 3- 3- 3- 3- 3- 3/ x x x x'
+    bs = BowlingScorer(sequence)
+    assert len(bs.frames) == 10
+    assert bs.total_points() == 101
+
+
+def test_normal_frame_total_points():
     sequence = '9- 9- 9- 9- 9- 9- 9- 9- 9- 9-'
     bs = BowlingScorer(sequence)
     assert bs.total_points() == 90
 
+    sequence = '9- 9- 9- 9- 9- 9- 9- 9- 9- 9/x'
+    bs = BowlingScorer(sequence)
+    assert bs.total_points() == 101
+
+
+def test_all_spare_frame_total_points():
     sequence = '5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/5'
     bs = BowlingScorer(sequence)
     assert bs.total_points() == 150
+
+
+
 
