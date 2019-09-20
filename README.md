@@ -21,6 +21,7 @@ pytest -v unit/test_gildedrose.py
 ### Training Topics 
 * [Gilded Rose](docs/gildedrose.md)
 * [Bowling](docs/bowling.md)
+* [FizzBuzz](docs/fizzbuzz.md)
 
 
 [All Kata](http://codingdojo.org/kata/)

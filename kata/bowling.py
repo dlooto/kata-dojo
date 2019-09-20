@@ -107,7 +107,7 @@ class Frame:
 
     def get_total_rolls_pins(self):
         """两次投掷击倒的瓶子总数"""
-        return (self.rolls[0]).pins + (self.rolls[1]).pins
+        return self.get_first_roll_pins() + (self.rolls[1]).pins
 
 
 class StrikeFrame(Frame):
