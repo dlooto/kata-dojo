@@ -12,11 +12,14 @@ class FizzBuzzer:
             raise Exception("Invalid number zero")
 
     def to_str(self):
-        if self.is_divisible_by_3_and_5():
+        if (self.is_divisible_by_3() and self.is_divisible_by_5()) or \
+                (self.is_divisible_by_3() and self.contains(5)) or \
+                (self.contains(3) and self.contains(5)) or \
+                (self.is_divisible_by_5() and self.contains(3)):
             return "FizzBuzz"
-        if self.is_divisible_by_3():
+        if self.is_divisible_by_3() or self.contains(3):
             return "Fizz"
-        if self.is_divisible_by_5():
+        if self.is_divisible_by_5() or self.contains(5):
             return "Buzz"
 
         return self.number
@@ -27,8 +30,8 @@ class FizzBuzzer:
     def is_divisible_by_5(self):
         return self.number % 5 == 0
 
-    def is_divisible_by_3_and_5(self):
-        return self.is_divisible_by_3() and self.is_divisible_by_5()
+    def contains(self, number):
+        return str(number) in str(self.number)
 
 
 def print_fizzbuzz_list(s, e):

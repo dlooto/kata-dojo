@@ -45,3 +45,23 @@ class FizzBuzzerTest(TestCase):
 
     def test_exception_sequence_index(self):
         self.assertRaisesRegex(Exception, "The start > end", print_fizzbuzz_list, 5, 1)
+
+    def test_contains_specified_number(self):
+         fb = FizzBuzzer(13)
+         assert fb.to_str() == "Fizz"
+
+         fb = FizzBuzzer(59)
+         assert fb.to_str() == "Buzz"
+
+         fb = FizzBuzzer(51)
+         assert fb.to_str() == "FizzBuzz"
+
+         fb = FizzBuzzer(35)
+         assert fb.to_str() == "FizzBuzz"
+
+         fb = FizzBuzzer(53)
+         assert fb.to_str() == "FizzBuzz"
+
+         fb = FizzBuzzer(533)
+         assert fb.to_str() == "FizzBuzz"
+
