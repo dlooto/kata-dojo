@@ -8,27 +8,27 @@
 写一个程序，打印1-100的数字。如果是3的倍数则打印Fizz，如果是5的倍数则打印Buzz，如果既是3的倍数、也是5的倍数则打印FizzBuzz。
 
 数字清单示例：
-    1
-    2
-    Fizz
-    4
-    Buzz
-    Fizz
-    7
-    8
-    Fizz
-    Buzz
-    11
-    Fizz
-    13
-    14
-    FizzBuzz
-    16
-    17
-    Fizz
-    19
-    Buzz
-    ... 直到100
+* 1
+* 2
+* Fizz
+* 4
+* Buzz
+* Fizz
+* 7
+* 8
+* Fizz
+* Buzz
+* 11
+* Fizz
+* 13
+* 14
+* FizzBuzz
+* 16
+* 17
+* Fizz
+* 19
+* Buzz
+* ... 直到100
 
 ### Stage 2 - 新需求
 * 一个数字如果被3整除、或者数字里含有3，则打印Fizz
