@@ -24,6 +24,8 @@
 - 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/5 (21 rolls: 10 pairs of 5 and spare, with a final 5) = 10 frames * 15 points = 150
 
 
+[测试用例设计](bowling_test_cases.md)
+
 
 [原文链接](http://codingdojo.org/kata/Bowling/)
 
