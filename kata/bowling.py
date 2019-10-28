@@ -1,180 +1,145 @@
 # coding=utf-8
 #
-# Created by junn, on 2019-09-06
+# Created by junn, on 2019-10-25
 #
 
-###################################
-#       保龄球游戏计分程序          #
-###################################
 
-
-class BowlingScorer:
-    """
-    保龄计分
-    """
+class Bowling:
 
     def __init__(self, sequence):
         self.frames = FrameFactory.create_frames(sequence)
 
-    def total_points(self):
-        sums = 0
+    def get_total_points(self):
+        total_points = 0
         for frame in self.frames:
-            sums += frame.get_points()
-        return sums
+            total_points += frame.get_points()
+        return total_points
 
 
 class FrameFactory:
 
     @classmethod
     def create_frames(cls, sequence):
-        """
-        未作如下检查：
-        1. 正确的投掷次数和轮次
-        2. 什么是有效的投掷
+        frame_str_list = sequence.split(' ')
 
-        :param sequence: 以空格分隔的字符串，如'9- x 3/ 5- 5- 5- 5- 5- 5- 8-'
-        """
-
-        # Build Frame list
-        frames = sequence.split(' ')
-        for frame in frames:
-            if not frame:
-                frames.remove(frame)
-
-        if len(frames) < 10:
-            raise Exception("Frame length less than 10 ")
-
-        results = []
-        for i in range(10-1):
-            if 'x' in frames[i]:
-                results.append(StrikeFrame(frames[i]))
-            elif '/' in frames[i]:
-                results.append(SpareFrame(frames[i]))
+        result_frames = []
+        for i in range(len(frame_str_list) - 1):
+            if 'x' in frame_str_list[i]:
+                result_frames.append(StrikeFrame(frame_str_list[i]))
+            elif '/' in frame_str_list[i]:
+                result_frames.append(SpareFrame(frame_str_list[i]))
             else:
-                results.append(Frame(frames[i]))  # '8-' or '33'
+                result_frames.append(Frame(frame_str_list[i]))
 
-        if len(frames) > 10:
-            results.append(LastFrame(''.join([s for s in frames[9:]])))
-        else:
-            results.append(LastFrame(frames[9]))
+        result_frames.append(LastFrame(frame_str_list[9]))
 
-        # Add next pointer
-        for i in range(len(results)):
+        for i in range(len(result_frames)):
             if i >= 9:
                 break
-            results[i].next = results[i+1]
+            result_frames[i].next = result_frames[i+1]
 
-        return results
+        return result_frames
 
 
 class Frame:
-    """
-    某一轮投球。两次投掷，未能击倒所有瓶子的情况
-    """
 
-    def __init__(self, rolls_str, next_frame=None):
-        self.rolls = self._init_rolls(rolls_str)      # 1-2次投掷
+    def __init__(self, frame_str, next_frame=None):
+        self.rolls = self._init_rolls(frame_str)
         self.next = next_frame
 
-    def _init_rolls(self, rolls_str):
-        i = 0
-        rolls = []
-        for s in rolls_str:
-            if s == '-':
-                rolls.append(Roll(0))
-            else:
-                rolls.append(Roll(int(s)))
-
-            i += 1
-        return rolls
-
-    def get_points(self):
-        sum_pins = 0
-        for roll in self.rolls:
-            sum_pins += roll.pins
-        return sum_pins
+    def _init_rolls(self, frame_str):
+        return [
+            Roll(to_int(frame_str[0])),
+            Roll(0) if frame_str[1] == '-' else Roll(to_int(frame_str[1]))
+        ]
 
     def has_two_rolls(self):
-        """是否有2次投掷"""
         return True
 
     def has_three_rolls(self):
         return False
 
     def get_first_roll_pins(self):
-        """首次投掷击倒的瓶子数"""
-        return (self.rolls[0]).pins
+        return self.rolls[0].pins
+
+    def get_second_roll_pins(self):
+        return self.rolls[1].pins
 
     def get_total_rolls_pins(self):
-        """两次投掷击倒的瓶子总数"""
-        return self.get_first_roll_pins() + (self.rolls[1]).pins
+        # return self.get_first_roll_pins() + self.get_second_roll_pins()
+        sum_pins = 0
+        for roll in self.rolls:
+            sum_pins += roll.pins
+        return sum_pins
+
+    def get_points(self):
+        sum_points = 0
+        for roll in self.rolls:
+            sum_points += roll.pins
+        return sum_points
 
 
 class StrikeFrame(Frame):
-    """ 一投全中，则只投掷一次 """
 
-    def _init_rolls(self, rolls_str):
+    def _init_rolls(self, frame_str):
         return [Roll(10)]
 
-    def get_points(self):
-        if self.next.has_two_rolls() or self.next.has_three_rolls():
-            return 10 + self.next.get_total_rolls_pins()
-
-        # 单次
-        return 10 + self.next.get_first_roll_pins() + self.next.next.get_first_roll_pins()
-
     def has_two_rolls(self):
-        """ 是否仅投掷了一次 """
         return False
+
+    def get_second_roll_pins(self):
+        raise Exception("No the second roll")
 
     def get_total_rolls_pins(self):
         return self.get_first_roll_pins()
 
+    def get_points(self):
+        if self.next.has_two_rolls() or self.next.has_three_rolls():
+            return 10 + self.next.get_first_roll_pins() + self.next.get_second_roll_pins()
+
+        return 10 + self.next.get_first_roll_pins() + self.next.next.get_first_roll_pins()
+
 
 class SpareFrame(Frame):
-    """ 二投中，本轮将投2次 """
 
-    def _init_rolls(self, rolls_str):
-        pins = int(rolls_str[0])
-        return [Roll(pins), Roll(10-pins)]
-
-    def get_points(self):
-        return 10 + self.next.get_first_roll_pins()
+    def _init_rolls(self, frame_str):       # 9/ 9/  -/ -/
+        pins = to_int(frame_str[0])
+        return [Roll(pins), Roll(10 - pins)]
 
     def get_total_rolls_pins(self):
         return 10
 
+    def get_points(self):
+        return 10 + self.next.get_first_roll_pins()
+
 
 class LastFrame(Frame):
-    """ 最后一轮. 可能有3次投掷(Strike/Spare时)，或者2次投掷 """
 
-    def _init_rolls(self, rolls_str):
-        if '/' in rolls_str:
-            first_pins = to_int(rolls_str[0])
-            return [Roll(first_pins), Roll(10-first_pins), Roll(to_int(rolls_str[2]))]
+    def _init_rolls(self, frame_str):   # x12 xxx -/x -/9 9/1 35
+        if '/' in frame_str:
+            first_pins = to_int(frame_str[0])
+            return [Roll(first_pins), Roll(10-first_pins), Roll(to_int(frame_str[2]))]
 
-        rolls = []
-        for i in range(len(rolls_str)):
-            rolls.append(Roll(to_int(rolls_str[i])))
+        return [Roll(to_int(s)) for s in frame_str]
 
-        return rolls
+    def has_two_rolls(self):
+        return len(self.rolls) == 2
 
     def has_three_rolls(self):
-        """最后一轮是否有3次投掷（即第一次投掷为全中）"""
         return len(self.rolls) == 3
 
 
 class Roll:
-    """ 一次投掷 """
 
     def __init__(self, pins):
-        self.pins = pins        # 投掷击倒的瓶子数
+        self.pins = pins
 
 
-def to_int(roll_str):
-    """ roll_str == '/'需要单独计算  """
-    if roll_str == 'x':
-        return 10
-    elif roll_str == '-':
+def to_int(s):
+    if s == '-':
         return 0
-    return int(roll_str)
+    elif s == 'x':
+        return 10
+    else:
+        return int(s)
+
