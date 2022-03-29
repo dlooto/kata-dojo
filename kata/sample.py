@@ -10,7 +10,10 @@ import logging
 logs = logging.getLogger(__name__)
 
 
-class Dog:
+class Animal:
+    """
+    这是一只小动物
+    """
 
     def __init__(self, name):
         self.name = name
@@ -18,7 +21,7 @@ class Dog:
         self.meat = None
         print("Dog %s is created" % name)
 
-    def run_step(self):
+    def run(self):
         self.position += 1
 
     def eat(self, meat):
